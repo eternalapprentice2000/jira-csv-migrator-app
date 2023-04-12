@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "app": "node main"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,6 @@
   "homepage": "https://github.com/eternalapprentice2000/jira-csv-migrator-app#readme",
   "dependencies": {
     "csvtojson": "^2.0.10",
-    "fs": "^0.0.1-security",
-    "json-to-csv": "^1.0.0"
+    "fs": "^0.0.1-security"
   }
 }
