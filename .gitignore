@@ -1,3 +1,6 @@
+## do not want to import csv files
+csv
+
 # Logs
 logs
 *.log

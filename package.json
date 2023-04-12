@@ -1,0 +1,24 @@
+{
+  "name": "jira-csv-migrator-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eternalapprentice2000/jira-csv-migrator-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eternalapprentice2000/jira-csv-migrator-app/issues"
+  },
+  "homepage": "https://github.com/eternalapprentice2000/jira-csv-migrator-app#readme",
+  "dependencies": {
+    "csvtojson": "^2.0.10",
+    "fs": "^0.0.1-security",
+    "json-to-csv": "^1.0.0"
+  }
+}
