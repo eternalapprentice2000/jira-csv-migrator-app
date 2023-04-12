@@ -9,8 +9,8 @@ let headersToExport = [
     "Epic Name",
     "Epic Link",
     "Issue Type",
-    "Assignee",
-    "Reporter",
+    // "Assignee",
+    // "Reporter",
     "Due Date",
     "Description",
     "Labels"
@@ -70,6 +70,10 @@ let _escapeQuotes = (str) => {
     return str.replace(/"/g, '""');
 }
 
+let _createStub = (str) => {
+    return `${str}`.replace(/ /g, "-").toLowerCase()
+}
+
 let writeCsv = (json, outFile) => {
     // getCounts for expandable fields
     let labelCount = 0;
@@ -127,10 +131,6 @@ let writeCsv = (json, outFile) => {
     fs.writeFileSync(outFile, outData.join("\n"));
 }
 
-let _createEpicStub = (summary) => {
-    return `${summary}`.replace(/ /g, "-").toLowerCase().substring(0,30)
-}
-
 let main = async () => {
 
     let jiraJson = await csv.fromFile(fn).then(json => json);
@@ -143,13 +143,17 @@ let main = async () => {
         row.Labels.push("sbs-jira-imported");
 
         // move status to label
-        row.Labels.push(`Status: ${row.Status}`);
+        row.Labels.push(_createStub(`Status ${row.Status}`));
 
         // move Original backlog field to label
-        row.Labels.push(`Backlog: ${row["Custom field (Backlog)"]}`);
+        row.Labels.push(_createStub(`Backlog ${row["Custom field (Backlog)"]}`));
 
         // move project name to labels
-        row.Labels.push(`Project Name: ${row["Project name"]}`);
+        row.Labels.push(_createStub(`Project Name ${row["Project name"]}`));
+
+        // add assignee and reporter to labels
+        row.Labels.push(_createStub(`Assignee ${row["Assignee"]}`));
+        row.Labels.push(_createStub(`Reporter ${row["Reporter"]}`));
 
         // epic name needs to exist, and then we need to map it to a ticket id
         // this will matter later
@@ -157,7 +161,7 @@ let main = async () => {
 
         if (row["Issue Type"] === "Epic") {
             // add to epic map
-            let stub = _createEpicStub(row.Summary);
+            let stub = _createStub(row.Summary);
             epicMap[row["Issue key"].toLowerCase()] = stub;
             row["Epic Name"] = stub;
         }
