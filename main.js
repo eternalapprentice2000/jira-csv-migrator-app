@@ -67,7 +67,7 @@ let _parseAttachment = (attachment) => {
 }
 
 let _escapeQuotes = (str) => {
-    return str.replace(/"/g, '""');
+    return (str || "").replace(/"/g, '""');
 }
 
 let _createStub = (str) => {
