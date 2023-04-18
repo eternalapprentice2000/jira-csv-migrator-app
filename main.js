@@ -109,9 +109,11 @@ let writeCsv = (json, outFile) => {
         labelCount = row.Labels.length > labelCount ? row.Labels.length : labelCount;
     }
 
+    let headersCsvOut = [];
     let csvOut = [];
+    let epicCsvOut = [];
 
-    csvOut.push([]); //headerLine
+    headersCsvOut.push([]); //headerLine
     // create headers
     for(let index in headersToExport){
         let header = headersToExport[index];
@@ -119,10 +121,10 @@ let writeCsv = (json, outFile) => {
         if (header === "Labels"){
             // special case, need to expand these out to the max label count
             for(let a = 1; a <= labelCount; a++){
-                csvOut[0].push("Labels");
+                headersCsvOut[0].push("Labels");
             }
         } else {
-            csvOut[0].push(header);
+            headersCsvOut[0].push(header);
         }
     }
 
@@ -147,18 +149,33 @@ let writeCsv = (json, outFile) => {
             }
         }
 
-        csvOut.push(writeCsvLine);
+        if (row["Issue Type"] === "Epic"){
+            epicCsvOut.push(writeCsvLine);
+        } else {
+            csvOut.push(writeCsvLine);
+        }
     }
 
     // concat everything and wrap them in quotes 
     let outData = [];
 
+    // headers
+    for(let i in headersCsvOut){
+        outData.push(`"${headersCsvOut[i].join('","')}"`);
+    }
+
+    // epics
+    for(let i in epicCsvOut){
+        outData.push(`"${epicCsvOut[i].join('","')}"`);
+    }
+
+    // everything else
     for(let i in csvOut){
         outData.push(`"${csvOut[i].join('","')}"`);
     }
 
     // write the file
-    fs.writeFileSync(outFile, outData.join("\n"));
+    fs.writeFileSync(outFile, outData.join("\r\n"));
 }
 
 let main = async () => {
@@ -198,7 +215,7 @@ let main = async () => {
 
         // add link to old ticket to beginning of Description
         row.Description.unshift("");
-        row.Description.unshift(`Original Ticket Link: <http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}>`);
+        row.Description.unshift(`Original Ticket Link: http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}>`);
 
         // add DOD if it exists
         if (row["Custom field (Definition of Done)"] !== ""){

@@ -22,4 +22,5 @@ node main
 
 ```
 
-5. Wonder in the Miracle that is the `out.csv` file
+5. Wonder in the Miracle that is the `out.csv` and the `epic-out.csv` files
+6. When importing into jira, be sure to import the `epic-out.csv` file first, it contains all the epics so the regular ticket imports will work properly
