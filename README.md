@@ -7,9 +7,10 @@ Designed for easy jira migration
 nodejs12+ installed
 
 ## How to use
-1. Create *csv* folder in the root project directory
-2. Put Jira Export file in csv folder and name it `jira-export.csv`
-3. Run node app
+1. (first use only) run `npm install` to install all of the node dependencies
+2. Create *csv* folder in the root project directory
+3. Put Jira Export file in csv folder and name it `jira-export.csv`
+4. Run node app
 
 ```powershell
 
@@ -21,4 +22,4 @@ node main
 
 ```
 
-4. Wonder in the Miracle that is the `out.csv` file
+5. Wonder in the Miracle that is the `out.csv` file
