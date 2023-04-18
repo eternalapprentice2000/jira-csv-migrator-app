@@ -18,6 +18,7 @@
   "homepage": "https://github.com/eternalapprentice2000/jira-csv-migrator-app#readme",
   "dependencies": {
     "csvtojson": "^2.0.10",
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "moment": "^2.29.4"
   }
 }

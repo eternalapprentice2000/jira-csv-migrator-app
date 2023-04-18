@@ -1,6 +1,7 @@
-const _csv  = require("csvtojson");
-const fs    = require("fs");
-const fn    = "./csv/jira-export.csv";
+const _csv      = require("csvtojson");
+const fs        = require("fs");
+const fn        = "./csv/jira-export.csv";
+const moment    = require("moment");
 
 let headersToExport = [
     "Summary",
@@ -9,11 +10,10 @@ let headersToExport = [
     "Epic Name",
     "Epic Link",
     "Issue Type",
-    // "Assignee",
-    // "Reporter",
     "Due Date",
     "Description",
-    "Labels"
+    "Labels",
+    "Priority"
 ];
 
 let _addToArray = (currentArray, item) => {
@@ -26,21 +26,47 @@ let _addToArray = (currentArray, item) => {
     return result
 }
 
+let _convertDate = (item) => {
+    let dt = moment(item, "YYYY-MM-DD hh:mm a", false);
+
+    if ((item || "") !== "" && !dt.isValid()){
+        let k = 0;
+    }
+
+    if (dt.isValid()) {
+        return dt.format("DD/MMM/YYYY");
+    } else {
+        return "";
+    }
+}
+
 let csv = _csv({ // basic processing on import, mostly useful for items with the same header to convert into arrays
     colParser : {
         "Comment" : (item, head, resultRow, row, colIndex) => {
             return  _addToArray(resultRow.Comment, item);
         },
-        // not importing the sprint maybe
-        // "Sprint" : (item, head, resultRow, row, colIndex) => {
-        //     return _addToArray(resultRow.Sprint, item);
-        // },
         "Attachment" : (item, head, resultRow, row, colIndex) => {
             return _addToArray(resultRow.Attachment, item);
         },
         "Labels" : (item, head, resultRow, row, colIndex) => {
             return _addToArray(resultRow.Labels, item);
         },
+        "Due Date" : (item, head, resultRow, row, colIndex) => {
+            let dt = _convertDate(item);
+            return dt;
+        },
+        "Priority" : (item, head, resultRow, row, colIndex) => {
+            if (item === "Lowest") { // there is no "Lowest setting, "
+                item = "Low"
+            }
+            return item;
+        },
+        "Description" : (item, head, resultRow, row, colIndex) => {
+            // convert description to list of strings instead of string blob
+            return item.split("\r\n");
+            
+        }
+
     }
 });
 
@@ -112,6 +138,10 @@ let writeCsv = (json, outFile) => {
                 for(let a = 1; a <= labelCount; a++){
                     writeCsvLine.push(_escapeQuotes(row[header][a-1] || ""));
                 }
+            } else if (header === "Description"){
+                // description is an array, need to markdownify it
+                let description = row[header].join("  \r\n");
+                writeCsvLine.push(_escapeQuotes(description));
             } else {
                 writeCsvLine.push(_escapeQuotes(row[header]));
             }
@@ -167,33 +197,44 @@ let main = async () => {
         }
 
         // add link to old ticket to beginning of Description
-        row.Description = `Original Ticket Link: <http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}>\n\n${row.Description}`; 
+        row.Description.unshift("");
+        row.Description.unshift(`Original Ticket Link: <http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}>`);
 
-        let dod = row["Custom field (Definition of Done)"];
-        if (dod !== ""){
+        // add DOD if it exists
+        if (row["Custom field (Definition of Done)"] !== ""){
             // add the definition of done
-            row.Description += `\n\n*Original Definition of Done*\n${row["Custom field (Definition of Done)"]}`;
+            row.Description.push("");
+            row.Description.push("*Original Definition of Done*");
+            row.Description.push(row["Custom field (Definition of Done)"]);
+            row.Description.push("");
         }
 
-        row.Description += "\n\n*Imported Comments:*"    
-        // add comments to description
-        for(let index in row.Comment){
-            let comment = _parseComments(row.Comment[index]);
-
-            row.Description += `\n ${comment.date} **${comment.createdBy}** :`;
-            row.Description += `\n ${comment.comment}`;
+        // add comments if they exist
+        if ((row.Comment || []).length > 0){
+            row.Description.push("*Imported Comments:*");
+            row.Description.push("");   
+            // add comments to description
+            for(let index in row.Comment){
+                let comment = _parseComments(row.Comment[index]);
+    
+                row.Description.push(`${comment.date} **${comment.createdBy}** :`);
+                row.Description.push(`${comment.comment}`);
+                row.Description.push("");
+            }
         }
 
-        // add attachments to Description
-        row.Description += "\n\n*Imported Attachments:*"    
-        for (let index in row.Attachment){
-            let attachment = _parseAttachment(row.Attachment[index]);
-            row.Description += `\n ${attachment.date} **${attachment.createdBy}** :`;
-            row.Description += `\n Attachment Name: ${attachment.imageName}`;
-            row.Description += `\n Attachment Link: <${attachment.imageLink}>`;
+        // add attachment links if they exist
+        if ((row.Attachment || []).length > 0){
+            row.Description.push("*Imported Attachments:*");
+            row.Description.push("");    
+            for (let index in row.Attachment){
+                let attachment = _parseAttachment(row.Attachment[index]);
+                row.Description.push(`${attachment.date} **${attachment.createdBy}** :`);
+                row.Description.push(`Attachment Name: ${attachment.imageName}`);
+                row.Description.push(`Attachment Link: <${attachment.imageLink}>`);
+                row.Description.push("");
+            }
         }
-
-        // map assignees/reports to new jira accounts
     }
 
     // need to update epic links in tickets with epics
@@ -204,7 +245,7 @@ let main = async () => {
 
         row["Epic Link"] = "";
 
-        if (epicLink !== undefined && epicLink !== ""){
+        if ((epicLink || "") !== ""){
             row["Epic Link"] = epicMap[epicLink.toLowerCase()]
         }
     }
