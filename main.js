@@ -215,7 +215,7 @@ let main = async () => {
 
         // add link to old ticket to beginning of Description
         row.Description.unshift("");
-        row.Description.unshift(`Original Ticket Link: http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}>`);
+        row.Description.unshift(`Original Ticket Link: http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}`);
 
         // add DOD if it exists
         if (row["Custom field (Definition of Done)"] !== ""){
