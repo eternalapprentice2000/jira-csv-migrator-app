@@ -227,7 +227,7 @@ let main = async () => {
         //row.Description.unshift("");
         //row.Description.unshift(`Original Ticket Link: http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}`);
 
-        row["External Issue Id"] = row["Issue Key"];
+        row["External Issue Id"] = row["Issue key"];
         row["External Issue Link"] = `http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}`;
 
         // add DOD if it exists
