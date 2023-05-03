@@ -11,6 +11,8 @@ let headersToExport = [
     "Epic Link",
     "Issue Type",
     "Due Date",
+    "External Issue Id",
+    "External Issue Link",
     "Description",
     "Labels",
     "Priority"
@@ -40,16 +42,20 @@ let _convertDate = (item) => {
     }
 }
 
+let _sanitize = (item) => {
+    return item.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '');
+}
+
 let csv = _csv({ // basic processing on import, mostly useful for items with the same header to convert into arrays
     colParser : {
         "Comment" : (item, head, resultRow, row, colIndex) => {
-            return  _addToArray(resultRow.Comment, item);
+            return  _addToArray(resultRow.Comment, _sanitize(item));
         },
         "Attachment" : (item, head, resultRow, row, colIndex) => {
-            return _addToArray(resultRow.Attachment, item);
+            return _addToArray(resultRow.Attachment, _sanitize(item));
         },
         "Labels" : (item, head, resultRow, row, colIndex) => {
-            return _addToArray(resultRow.Labels, item);
+            return _addToArray(resultRow.Labels, _sanitize(item));
         },
         "Due Date" : (item, head, resultRow, row, colIndex) => {
             let dt = _convertDate(item);
@@ -63,8 +69,8 @@ let csv = _csv({ // basic processing on import, mostly useful for items with the
         },
         "Description" : (item, head, resultRow, row, colIndex) => {
             // convert description to list of strings instead of string blob
-            return item.split("\r\n");
-            
+        
+            return _sanitize(item).split("\r\n");
         }
 
     }
@@ -187,6 +193,10 @@ let main = async () => {
     for(let index in jiraJson){
         let row = jiraJson[index];
         // adding imported automatically label
+
+        if (row.Labels === undefined) {
+            row.Labels = [];
+        }
         row.Labels.push("sbs-jira-imported");
 
         // move status to label
@@ -214,8 +224,11 @@ let main = async () => {
         }
 
         // add link to old ticket to beginning of Description
-        row.Description.unshift("");
-        row.Description.unshift(`Original Ticket Link: http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}`);
+        //row.Description.unshift("");
+        //row.Description.unshift(`Original Ticket Link: http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}`);
+
+        row["External Issue Id"] = row["Issue Key"];
+        row["External Issue Link"] = `http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}`;
 
         // add DOD if it exists
         if (row["Custom field (Definition of Done)"] !== ""){
