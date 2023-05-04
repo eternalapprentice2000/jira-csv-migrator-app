@@ -72,7 +72,6 @@ let csv = _csv({ // basic processing on import, mostly useful for items with the
         
             return _sanitize(item).split("\r\n");
         }
-
     }
 });
 
