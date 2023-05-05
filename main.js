@@ -11,6 +11,7 @@ let headersToExport = [
     "Epic Link",
     "Issue Type",
     "Due Date",
+    "Project Key",
     "External Issue Id",
     "External Issue Link",
     "Description",
@@ -204,9 +205,6 @@ let main = async () => {
 
         // move Original backlog field to label
         row.Labels.push(_createStub(`Backlog ${row["Custom field (Backlog)"]}`));
-
-        // move project name to labels
-        row.Labels.push(_createStub(`Project Name ${row["Project name"]}`));
 
         // add assignee and reporter to labels
         row.Labels.push(_createStub(`Assignee ${row["Assignee"]}`));
