@@ -11,7 +11,7 @@ let headersToExport = [
     "Epic Link",
     "Issue Type",
     "Due Date",
-    "Project Key",
+    "Project key",
     "External Issue Id",
     "External Issue Link",
     "Description",
@@ -220,10 +220,6 @@ let main = async () => {
             epicMap[row["Issue key"].toLowerCase()] = stub;
             row["Epic Name"] = stub;
         }
-
-        // add link to old ticket to beginning of Description
-        //row.Description.unshift("");
-        //row.Description.unshift(`Original Ticket Link: http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}`);
 
         row["External Issue Id"] = row["Issue key"];
         row["External Issue Link"] = `http://jira.b2b.regn.net:8080/browse/${row["Issue key"]}`;
