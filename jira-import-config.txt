@@ -1,0 +1,58 @@
+{
+  "config.version" : "2.0",
+  "config.project.from.csv" : "false",
+  "config.encoding" : "UTF-8",
+  "config.email.suffix" : "@",
+  "config.field.mappings" : {
+    "Issue Type" : {
+      "jira.field" : "issuetype"
+    },
+    "Description" : {
+      "jira.field" : "description"
+    },
+    "Parent id" : {
+      "jira.field" : "subtask-parent-id"
+    },
+    "Priority" : {
+      "jira.field" : "priority"
+    },
+    "Summary" : {
+      "jira.field" : "summary"
+    },
+    "Labels" : {
+      "jira.field" : "labels"
+    },
+    "Issue id" : {
+      "jira.field" : "issue-id"
+    },
+    "Epic Name" : {
+      "existing.custom.field" : "10004"
+    },
+    "Epic Link" : {
+      "existing.custom.field" : "10001"
+    },
+    "Due Date" : {
+      "jira.field" : "duedate"
+    },
+    "External Issue Link" : {
+      "existing.custom.field" : "12745"
+    },
+    "External Issue Id" : {
+      "existing.custom.field" : "11309"
+    },
+    "Project key" : {
+      "jira.field" : "component"
+    }
+  },
+  "config.value.mappings" : { },
+  "config.delimiter" : ",",
+  "config.project" : {
+    "project.type" : null,
+    "project.key" : "FCCFI",
+    "project.description" : null,
+    "project.url" : null,
+    "project.name" : "Firco Insight",
+    "project.lead" : "rearan01@risk"
+  },
+  "config.date.format" : "dd/MMM/yyyy"
+}
