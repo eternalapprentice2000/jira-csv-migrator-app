@@ -10,7 +10,8 @@ nodejs12+ installed
 1. (first use only) run `npm install` to install all of the node dependencies
 2. Create *csv* folder in the root project directory
 3. Put Jira Export file in csv folder and name it `jira-export.csv`
-4. Run node app
+4. Update the `importTeamName` variable to the name of the team for the specific import file.
+5. Run node app
 
 ```powershell
 
@@ -22,5 +23,4 @@ node main
 
 ```
 
-5. Wonder in the Miracle that is the `out.csv` and the `epic-out.csv` files
-6. When importing into jira, be sure to import the `epic-out.csv` file first, it contains all the epics so the regular ticket imports will work properly
+5. Wonder in the Miracle that is the `out.csv`
