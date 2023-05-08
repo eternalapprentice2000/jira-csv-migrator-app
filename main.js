@@ -1,7 +1,9 @@
-const _csv      = require("csvtojson");
-const fs        = require("fs");
-const fn        = "./csv/jira-export.csv";
-const moment    = require("moment");
+const _csv              = require("csvtojson");
+const fs                = require("fs");
+const fn                = "./csv/jira-export.csv";
+const moment            = require("moment");
+
+const importTeamName    = "Mase";
 
 let headersToExport = [
     "Summary",
@@ -212,6 +214,7 @@ let main = async () => {
         // add assignee and reporter to labels
         row.Labels.push(_createStub(`Assignee ${row["Assignee"]}`));
         row.Labels.push(_createStub(`Reporter ${row["Reporter"]}`));
+        row.Labels.push(_createStub(`Team Assigned ${importTeamName}`));
 
         // epic name needs to exist, and then we need to map it to a ticket id
         // this will matter later
