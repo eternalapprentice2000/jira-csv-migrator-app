@@ -72,6 +72,10 @@ let csv = _csv({ // basic processing on import, mostly useful for items with the
             // convert description to list of strings instead of string blob
         
             return _sanitize(item).split("\r\n");
+        },
+        "Issue Type" : (item, head, resultRow, row, colIndex) => {
+            let subTaskConversionList = ["Meeting", "Pull Request Review"];
+            return subTaskConversionList.indexOf(item) > -1 ? "Sub-task" : item;
         }
     }
 });
