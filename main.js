@@ -223,9 +223,8 @@ let main = async () => {
 
         if (row["Issue Type"] === "Epic") {
             // add to epic map
-            let stub = _createStub(row.Summary);
-            epicMap[row["Issue key"].toLowerCase()] = stub;
-            row["Epic Name"] = stub;
+            epicMap[row["Issue key"].toLowerCase()] = row.Summary;
+            row["Epic Name"] = row.Summary;
         }
 
         row["External Issue Id"] = row["Issue key"];
